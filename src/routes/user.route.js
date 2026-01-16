@@ -4,6 +4,7 @@ import { registerUser,
         updateUserProfile,
         changeCurrentUserPassword,
         getCurrentUser,
+        updateAccoutDetails,
         logoutUser } from "../controllers/user.controller.js";
 import {upload} from "../middlewares/multer.middleware.js"
 import {verifyJWT} from "../middlewares/auth.middleware.js"
@@ -17,6 +18,7 @@ router.route("/logout").get(verifyJWT,logoutUser)
 router.route("/profileImage").patch(upload.single("profileImage"),verifyJWT,updateUserProfile)
 router.route("/updatePassword").patch(verifyJWT,changeCurrentUserPassword)
 router.route("/userDetails").get(verifyJWT,getCurrentUser)
+router.route("/updateAccount").patch(verifyJWT,updateAccoutDetails)
 
 
 export default router;
