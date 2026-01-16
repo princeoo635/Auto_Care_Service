@@ -33,7 +33,6 @@ const userSchema=new mongoose.Schema(
         password:{
             type:String,
             required:[true,'password is requiredd!'],
-            select:false
         },
         role:{
             type:String,
