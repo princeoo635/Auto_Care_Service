@@ -14,6 +14,8 @@ app.use(express.static("public"))
 app.use(cookieParser())
 
 import userRoutes from "./routes/user.route.js"
+import inventoryRoutes from "./routes/inventory.route.js"
 app.use("/api/v1/users",userRoutes)
+app.use("/api/v1/inventory",inventoryRoutes)
 
 export {app};
