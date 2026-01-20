@@ -26,13 +26,50 @@ const addProduct = AsyncHandler (async (req,res) => {
     if(!product){
         throw new ApiError(404,"Product could not be added.")
     }
-    res.status(201).json(
+    return res.status(201).json(
         new ApiResponse(201,product,"product added successfully.")
     )
 })
 
-
+//update product
+const updateProductDetails = AsyncHandler( async (req,res) => {
+    if (req.user.role!=="admin"){
+        throw new ApiError(403,"only admin can update product.")
+    }
+    const { productId } = req.params
+    if(!productId){
+        throw new ApiError(400,"product id is required.")
+    }
+    const { productName, productNo, type} = req.body
+    if( !productName && !productNo && !type ){
+        throw new ApiError(400,"atleast one field is required.");
+    }
+    if (productNo) {
+        const exists = await Inventory.findOne({ productNo });
+        if (exists && exists._id.toString() !== productId) {
+            throw new ApiError(409, "Product number already exists");
+        }
+    }
+    const product = await Inventory.findByIdAndUpdate(
+        productId,
+        {
+            $set:{
+                productName,
+                productNo,
+                type
+            }
+        },
+        { new : true}
+    )
+    if(!product){
+        throw new ApiError(404,"product not found.")
+    }
+    return res.status(200).json(
+        new ApiResponse(200,product,"product updated successfully.")
+    )
+})
 
 export {
     addProduct,
+    updateProductDetails
 }
