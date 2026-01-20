@@ -40,8 +40,8 @@ const updateProductDetails = AsyncHandler( async (req,res) => {
     if(!productId){
         throw new ApiError(400,"product id is required.")
     }
-    const { productName, productNo, type} = req.body
-    if( !productName && !productNo && !type ){
+    const { productName, productNo, type,price} = req.body
+    if( !productName && !productNo && !type && !price ){
         throw new ApiError(400,"atleast one field is required.");
     }
     if (productNo) {
@@ -56,7 +56,8 @@ const updateProductDetails = AsyncHandler( async (req,res) => {
             $set:{
                 productName,
                 productNo,
-                type
+                type,
+                price
             }
         },
         { new : true}
@@ -69,7 +70,26 @@ const updateProductDetails = AsyncHandler( async (req,res) => {
     )
 })
 
+//delete product
+const deleteProduct = AsyncHandler(async (req,res) => {
+    if(req.user.role !== 'admin'){
+        throw new ApiError(403,"only admin can delete product")
+    }
+    const { productId } = req.params
+    if( !productId ){
+        throw new ApiError(400,"product id is required.")
+    }
+    const deletedProduct = await Inventory.findByIdAndDelete(productId)
+    if(!deletedProduct){
+        throw new ApiError(404,"product not found.")
+    }
+    return res.status(200).json(
+        new ApiResponse(200,deletedProduct,"product delete successfully.")
+    )
+})
+
 export {
     addProduct,
-    updateProductDetails
+    updateProductDetails,
+    deleteProduct
 }
