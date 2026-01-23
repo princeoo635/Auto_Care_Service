@@ -88,8 +88,83 @@ const deleteProduct = AsyncHandler(async (req,res) => {
     )
 })
 
+//increase quantity
+const incrementQuantity = AsyncHandler(async (req, res) => {
+    if (req.user.role !== "admin") {
+        throw new ApiError(403, "only admin can update quantity")
+    }
+
+    const { productId } = req.params
+    const { quantity } = req.body
+
+    if (!quantity || quantity <= 0) {
+        throw new ApiError(400, "valid increment quantity required")
+    }
+
+    const product = await Inventory.findByIdAndUpdate(
+        productId,
+        { $inc: { quantity: quantity } },
+        { new: true }
+    )
+
+    if (!product) {
+        throw new ApiError(404, "product not found")
+    }
+
+    res.status(200).json(
+        new ApiResponse(200, product, "quantity increased successfully")
+    )
+})
+
+//decrese quantity
+const decrementQuantity = AsyncHandler(async (req, res) => {
+    if (req.user.role !== "admin") {
+        throw new ApiError(403, "only admin can update quantity")
+    }
+    const { productId } = req.params
+    const { quantity } = req.body
+
+    if (!quantity || quantity <= 0) {
+        throw new ApiError(400, "valid decrement amount required")
+    }
+
+    const product = await Inventory.findOneAndUpdate(
+        {
+            _id: productId,
+            quantity: { $gte: quantity } 
+        },
+        { $inc: { quantity: -quantity } },
+        { new: true }
+    );
+
+    if (!product) {
+        throw new ApiError(400, "insufficient stock or product not found");
+    }
+
+    res.status(200).json(
+        new ApiResponse(200, product, "quantity decreased successfully")
+    );
+});
+
+// get all product
+const allProduct = AsyncHandler(async (req,res) => {
+    if (req.user.role !== "admin") {
+        throw new ApiError(403, "only admin can update quantity")
+    }
+    const allProduct = await Inventory.find()
+    if (!allProduct){
+        throw new ApiError(404,"products not found.")
+    }
+    return res.status(200).json(
+        new ApiResponse(200,allProduct,"all product is fetched.")
+    )
+})
+
 export {
     addProduct,
     updateProductDetails,
-    deleteProduct
+    deleteProduct,
+    incrementQuantity,
+    decrementQuantity,
+    allProduct
 }
