@@ -40,7 +40,45 @@ const addMechanic = AsyncHandler ( async (req,res) => {
         new ApiResponse(201,createdMechanic,"mechanic registered successfully.")
     )
 })
+// update mechanic details
+const updateMechanic = AsyncHandler(async (req,res) => {
+    if(req.user.role!=='admin'){
+        throw new ApiError(403,"Only admin can update mechanic details.")
+    }
+    const { mechanicId } = req.params
+    if(!mechanicId){
+        throw new ApiError(400,"mechanic id is required")
+    }
+    const { name, experience, contact } = req.body
+    if ( !name && experience===undefined && !contact){
+        throw new ApiError(400,"Atlest one value is required.")
+    }
+    if (contact) {
+        const exists = await Mechanic.findOne({ contact });
+        if (exists && exists._id.toString() !== mechanicId) {
+            throw new ApiError(409, "contact already exists");
+        }
+    }
+    const updateFields = {};
+    if (name !== undefined) updateFields.name = name;
+    if (experience !== undefined) updateFields.experience = experience;
+    if (contact !== undefined) updateFields.contact = contact;
+    const mechanic = await Mechanic.findByIdAndUpdate(
+        mechanicId,
+        {
+            $set: updateFields
+        },
+        { new : true }
+    )
+    if(!mechanic){
+        throw new ApiError(404,"Mechanic does not exists.")
+    }
+    return res.status(200).json(
+        new ApiResponse(200,mechanic,"mechanic details updated successfully")
+    )
+})
 
 export {
-    addMechanic
+    addMechanic,
+    updateMechanic
 }
