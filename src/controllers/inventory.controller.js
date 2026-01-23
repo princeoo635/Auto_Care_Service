@@ -41,7 +41,7 @@ const updateProductDetails = AsyncHandler( async (req,res) => {
         throw new ApiError(400,"product id is required.")
     }
     const { productName, productNo, type,price} = req.body
-    if( !productName && !productNo && !type && !price ){
+    if( !productName && !productNo && !type && price===undefined ){
         throw new ApiError(400,"atleast one field is required.");
     }
     if (productNo) {
@@ -50,15 +50,15 @@ const updateProductDetails = AsyncHandler( async (req,res) => {
             throw new ApiError(409, "Product number already exists");
         }
     }
+    const updateFields = {};
+    if (productName !== undefined) updateFields.productName = productName;
+    if (productNo !== undefined) updateFields.productNo = productNo;
+    if (type !== undefined) updateFields.type = type;
+    if (price !== undefined) updateFields.price = price;
     const product = await Inventory.findByIdAndUpdate(
         productId,
         {
-            $set:{
-                productName,
-                productNo,
-                type,
-                price
-            }
+            $set: updateFields
         },
         { new : true}
     )
