@@ -78,7 +78,72 @@ const updateMechanic = AsyncHandler(async (req,res) => {
     )
 })
 
+//remove mechanic
+const removeMechanic = AsyncHandler ( async (req,res) => {
+    if( req.user.role != 'admin'){
+        throw new ApiError(403,"Only admin can remove mechanic")
+    }
+    const { mechanicId } = req.params
+    if( !mechanicId ){
+        throw new ApiError (400,"mechanic id is required.")
+    }
+    const deletedMechanic = await Mechanic.findByIdAndDelete(mechanicId)
+    if (!deletedMechanic ){
+        throw new ApiError(404,"mechanic not found.")
+    }
+    return res.status(200).json(
+        new ApiResponse(200,deletedMechanic,"mechanic removed successfully.")
+    )
+})
+
+//get all mechanics
+const allMechanic = AsyncHandler (async (req,res) => {
+    if( req.user.role != 'admin'){
+        throw new ApiError(403,"Only admin can remove mechanic")
+    }
+    const mechanic = await Mechanic.find()
+    if (!mechanic){
+        throw new ApiError(404,"no mechanic found.")
+    }
+    return res.status(200).json(
+        new ApiResponse(200,mechanic,"fetched all mechanics")
+    )
+})
+
+//profile image update
+const updateMechanicProfile = AsyncHandler(async (req,res)=>{
+    if( req.user.role != 'admin'){
+        throw new ApiError(403,"Only admin can remove mechanic")
+    }
+    const { mechanicId } = req.params
+    if( !mechanicId ){
+        throw new ApiError (400,"mechanic id is required.")
+    }
+    const profileImageLocalPath=req.file?.path
+    if(!profileImageLocalPath){
+        throw new ApiError(400,"profile file is missing.")
+    }
+    const profileImage=await uploadOnCloudinary(profileImageLocalPath)
+    if(!profileImage.url){
+        throw new ApiError(400,"Error while uploading on cloudinary.")
+    }
+    const user=await Mechanic.findByIdAndUpdate(
+        mechanicId,
+        {
+            $set:{profileImage:profileImage.url}
+        },
+        {new:true}
+    )
+    return res.status(200)
+    .json(
+        new ApiResponse(200,user,"Profile  updated successfully.")
+    )
+})
+
 export {
     addMechanic,
-    updateMechanic
+    updateMechanic,
+    removeMechanic,
+    allMechanic,
+    updateMechanicProfile
 }
