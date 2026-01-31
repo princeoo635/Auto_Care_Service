@@ -14,6 +14,6 @@ router.route("/addMechanic").post(upload.single("profileImage"),verifyJWT,addMec
 router.route("/update/:mechanicId").post(verifyJWT,updateMechanic)
 router.route("/remove/:mechanicId").delete(verifyJWT,removeMechanic)
 router.route("/allMechanic").get(verifyJWT,allMechanic)
-router.route("/updateImage").patch(upload.single("profileImage"),verifyJWT,updateMechanicProfile)
+router.route("/updateImage/:mechanicId").patch(upload.single("profileImage"),verifyJWT,updateMechanicProfile)
 
 export default router
