@@ -1,7 +1,7 @@
 import { ApiError } from '../utils/ApiError.js'
 import { ApiResponse } from '../utils/ApiResponse.js'
 import { AsyncHandler } from '../utils/AsyncHandler.js'
-import { Car } from '../models/car.model.js/'
+import { Car } from '../models/car.model.js'
 
 // register car
 const registerCar = AsyncHandler(async (req,res) => {
@@ -9,7 +9,8 @@ const registerCar = AsyncHandler(async (req,res) => {
     if( !brand || !model || !licenseNo ){
         throw new ApiError(400,"All fields are required.")
     }
-    const existingCar = await Car.findOne({licenseNo})
+    const normalized = licenseNo.toUpperCase()
+    const existingCar = await Car.findOne({licenseNo:normalized})
     if(existingCar){
         throw new ApiError(400,"This car is already register with us.")
     }
@@ -70,7 +71,26 @@ const updateCar =AsyncHandler(async (req,res) => {
     )
 })
 
+//remove car
+const removeCar = AsyncHandler(async (req,res) => {
+    if (car.owner.toString() !== req.user._id.toString() &&
+        req.user.role !== "admin") {
+        throw new ApiError(403, "Not allowed to remove this car")
+    }
+    const { carId } = req.params
+    if(!carId){
+        throw new ApiError(400,"car id is needed.")
+    }
+    const car = await Car.findByIdAndDelete(carId)
+    if(!car){
+        throw new ApiError(404,"car not found")
+    }
+    return res.status(200).json(
+        new ApiResponse(200,car,"car removed successfully.")
+    )
+})
 export{
     registerCar,
-    updateCar
+    updateCar,
+    removeCar
 }
