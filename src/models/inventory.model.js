@@ -32,4 +32,4 @@ const inventorySchema = new mongoose.Schema({
     }
 })
 
-export const Inventory = mongoose.model("Inventory",inventorySchema)
+export const Inventory =mongoose.models.Inventory || mongoose.model("Inventory",inventorySchema)

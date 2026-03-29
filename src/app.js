@@ -18,11 +18,13 @@ import inventoryRoutes from "./routes/inventory.route.js"
 import mechanicRoutes from "./routes/mechanic.route.js"
 import carRouter from "./routes/car.route.js"
 import serviceRouter from "./routes/service.route.js"
+import bookingRouter from "./routes/booking.route.js"
 
 app.use("/api/v1/users",userRoutes)
 app.use("/api/v1/inventory",inventoryRoutes)
 app.use("/api/v1/mechanic",mechanicRoutes)
 app.use("/api/v1/cars",carRouter)
 app.use("/api/v1/services",serviceRouter)
+app.use("/api/v1/bookings",bookingRouter)
 
 export {app};
