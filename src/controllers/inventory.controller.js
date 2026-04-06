@@ -1,7 +1,7 @@
 import { ApiError } from '../utils/ApiError.js'
 import { ApiResponse } from '../utils/ApiResponse.js'
 import { AsyncHandler } from '../utils/AsyncHandler.js'
-import { Inventory } from '../models/inventory.model.js/'
+import { Inventory } from '../models/inventory.model.js'
 
 //add new product
 const addProduct = AsyncHandler (async (req,res) => {
