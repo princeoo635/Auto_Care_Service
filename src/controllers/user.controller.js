@@ -5,10 +5,11 @@ import { uploadOnCloudinary } from '../utils/cloudinary.js'
 import { User } from '../models/user.model.js'
 
 //option
-const option={
-    httpOnly: true,
-    secure: true
-}
+const options = {
+  httpOnly: true,
+  secure: true,
+  sameSite: "None",
+};
 
 //register user
 const registerUser = AsyncHandler( async (req,res) => {
