@@ -5,7 +5,7 @@ import { uploadOnCloudinary } from '../utils/cloudinary.js'
 import { User } from '../models/user.model.js'
 
 //option
-const options = {
+const option = {
   httpOnly: true,
   secure: true,
   sameSite: "None",
