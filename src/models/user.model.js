@@ -34,7 +34,7 @@ const userSchema=new mongoose.Schema(
             type:String,
             required:[true,'password is requiredd!'],
         },
-        role:{
+        whoEntered:{
             type:String,
             enum:["admin","user"],
             default:"user"
