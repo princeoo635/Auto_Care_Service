@@ -17,7 +17,7 @@ router.route("/login").post(loginUser)
 router.route("/logout").get(verifyJWT,logoutUser)
 router.route("/profileImage").patch(upload.single("profileImage"),verifyJWT,updateUserProfile)
 router.route("/updatePassword").patch(verifyJWT,changeCurrentUserPassword)
-router.route("/userDetails").get(verifyJWT,getCurrentUser)
+router.route("/current-user").get(verifyJWT,getCurrentUser)
 router.route("/updateAccount").patch(verifyJWT,updateAccoutDetails)
 
 
