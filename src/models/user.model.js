@@ -35,9 +35,9 @@ const userSchema=new mongoose.Schema(
             required:[true,'password is requiredd!'],
         },
         whoEntered:{
-            type:String,
-            enum:["admin","user"],
-            default:"user"
+           type:String,
+           enum:["owner","customer"],
+           default:"customer"
         },
         phone:{
             type:String,
